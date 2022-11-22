@@ -30,25 +30,16 @@ be created in multi-llokup.c*/
                 //defined in array.h//
 
 
-//*********** Active Requester Struct ***********//
-typedef struct Active{
-    int active_requesters;
-}Active;
-
-
 //*************Requester Struct***********//
 typedef struct Requesters{
 
     char** input_files; //shared access to list input files (names)
     FILE * serviced_log; //argv[3]
     pthread_mutex_t file_position_lock; //provide mutual exclusion for writing
-    pthread_mutex_t *check_producers;
     pthread_mutex_t serviced_lock; //writing log
     stack * shared_buffer; //pointer to stack struct
-    Active * shared_active;
     int global_index; //the key to multithreaded file reads
     int file_count; //argc-5
-    int *active_reqs;
 
 }Requesters;
 
@@ -56,11 +47,8 @@ typedef struct Requesters{
 
 typedef struct Resolvers{
     pthread_mutex_t results_lock; //provide mutual exclusion for writing to results.txt
-    pthread_mutex_t *check_producers; //locking mechanism when consumer tries to check producer progress
     stack * shared_buffer;
     FILE * results_log; //argv[4]
-    Active * shared_active;
-    int *active_reqs;
 }Resolvers;
 
 

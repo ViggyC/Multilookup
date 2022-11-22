@@ -1,0 +1,8 @@
+make --dry-run --always-make --keep-going --print-directory
+make: Entering directory '/home/vigneshubuntu/Documents/CSCI3753/Multilookup'
+clang -Wextra -Wall -pedantic -g -std=gnu99  -c array.c -o array.o
+clang -Wextra -Wall -pedantic -g -std=gnu99  -c multi-lookup.c -o multi-lookup.o
+clang -Wextra -Wall -pedantic -g -std=gnu99  -c util.c -o util.o
+clang -Wextra -Wall -pedantic -g -std=gnu99  -o multi-lookup array.o multi-lookup.o util.o   -lpthread
+make: Leaving directory '/home/vigneshubuntu/Documents/CSCI3753/Multilookup'
+ 

@@ -10,8 +10,8 @@ LIBS = -lpthread
 MAIN = multi-lookup
 
 # Add any additional .c files to MSRCS and .h files to MHDRS
-MSRCS = test.c array.c #multi-lookup.c
-MHDRS = array.h #multi-lookup.h
+MSRCS = array.c  multi-lookup.c
+MHDRS = array.h multi-lookup.h
 
 # Do not modify these lines
 SRCS = $(MSRCS) util.c

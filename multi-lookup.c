@@ -187,21 +187,10 @@ int main(int argc, char* argv[]){
     }*/
 
     stack buffer;
-
-    Active active;
-
-    int active_requesters = num_requesters; //locally
-    active.active_requesters = num_requesters;
-   
     array_init(&buffer);
-
-    pthread_mutex_t producer_check;
-    pthread_mutex_init(&producer_check, 0);
-    
 
     Requesters requester_args; //struct in .h
     Resolvers resolver_args; //struct in .h
-
 
     pthread_t requesters_id[num_requesters];
     pthread_t resolvers_id[num_resolvers];
@@ -215,15 +204,10 @@ int main(int argc, char* argv[]){
     requester_args.global_index = 0;
     pthread_mutex_init((&requester_args.file_position_lock), 0); 
     pthread_mutex_init((&requester_args.serviced_lock), 0) ;
-    //pthread_mutex_init(&(requester_args.decrement), 0);
-
-    requester_args.check_producers = &producer_check; //pointer in struct
 
 
     requester_args.shared_buffer = &buffer; //data structure buffer defined as pointer
-    requester_args.shared_active = &active;
     requester_args.serviced_log = fopen(argv[3], "w+");
-    requester_args.active_reqs = &active_requesters;
     int fdreq = access(argv[3], F_OK | W_OK);
 
     if(requester_args.serviced_log == NULL || fdreq!=0){
@@ -234,10 +218,7 @@ int main(int argc, char* argv[]){
 //**********************Initialize resolver arguments**********************//////////////////
     
     pthread_mutex_init((&resolver_args.results_lock), 0); 
-    resolver_args.check_producers = &producer_check;//same pointer for producer check
     resolver_args.shared_buffer = &buffer;
-    resolver_args.shared_active = &active;
-    resolver_args.active_reqs = &active_requesters;
     resolver_args.results_log = fopen(argv[4], "w+");
     int fdres = access(argv[4], F_OK | W_OK);
 
@@ -299,7 +280,6 @@ int main(int argc, char* argv[]){
     pthread_mutex_destroy(&(requester_args.file_position_lock));
     pthread_mutex_destroy(&(requester_args.serviced_lock));
     pthread_mutex_destroy(&(resolver_args.results_lock));
-    pthread_mutex_destroy(&producer_check);
 
 
    
@@ -311,7 +291,6 @@ int main(int argc, char* argv[]){
     fclose(requester_args.serviced_log);
     fclose(resolver_args.results_log);
     
-
 
     gettimeofday(&end, NULL);
     float time = (end.tv_sec - start.tv_sec) + 1e-6*(end.tv_usec - start.tv_usec);

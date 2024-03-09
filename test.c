@@ -41,13 +41,10 @@ void* producer(void* args){
     int item;
     //lets produce NUM_ITEMS items 
     for(int i=0; i<PRODUCE; i++){
-        //pthread_mutex_lock(&(data->put));
         item = rand()%100;
         char str[MAX_NAME_LENGTH];
         sprintf (str, "%d", item);
         array_put( &(data->sharedBuffer), str );
-
-        //pthread_mutex_unlock(&(data->get))
     }
 
     return NULL;
@@ -66,34 +63,6 @@ void* consumer(void* args){
         array_get( &(data->sharedBuffer), &hostname ); //&hostname = char **hostname
         
     }
-
-    /*while(1){
-
-        //this mutex needs to only allow one consumer to read num_produced so we can terminate
-        pthread_mutex_lock(&(data->count_produced)); //locking num_produced
-        pthread_mutex_lock(&(data->buffer_position)); //locking counter within shared buffer
-
-        //int temp_numProduced = data->sharedBuffer.num_produced;
-        //int temp_counter = data->sharedBuffer.counter;
-        //pthread_mutex_lock(&(data->get));
-        //we have to lock this check because consumer could access wrong value
-
-        if(data->sharedBuffer.num_produced==NUM_ITEMS*PRODUCER_THREADS && data->sharedBuffer.counter<=0){
-            printf("Done consuming\n");
-            pthread_mutex_unlock(&(data->buffer_position));
-            pthread_mutex_unlock(&(data->count_produced));
-            return 0;
-        }else{
-            //array_get( &(data->sharedBuffer), &hostname );
-            pthread_mutex_unlock(&(data->buffer_position));
-            pthread_mutex_unlock(&(data->count_produced));
-        }
-
-        array_get( &(data->sharedBuffer), &hostname );
-
-         
-
-    }*/
 
     free(hostname);
     return NULL;
@@ -118,11 +87,7 @@ int main(){
     pthread_t c[CONSUMER_THREADS];
 
     pthread_mutex_init(&(thread_data.count_produced), 0);
-    
     pthread_mutex_init(&(thread_data.buffer_position), 0);
-
-
-
 
     for(int i=0; i<PRODUCER_THREADS; i++){
         //int* a = malloc(sizeof(int));
@@ -131,7 +96,6 @@ int main(){
         if(pthread_create(&p[i], NULL, producer, &thread_data) !=0){
             printf("Failed to create producer thread\n");
         }
-
     }
 
     for(int i=0; i<CONSUMER_THREADS; i++){

@@ -102,7 +102,7 @@ void *resolvers(void* args){
         }
 
         /* POSION PILL */
-        printf("word: %s\n", name);
+        //printf("word: %s\n", name);
         if(strcmp(name, "PEACE OUT")==0){
             printf("Thread %lx resolved %d hostnames\n", tid, resolved_count);
             fflush(stderr);

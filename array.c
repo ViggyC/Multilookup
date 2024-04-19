@@ -8,13 +8,9 @@ int array_init(stack *s){
     s->num_produced = 0;
     s->num_consumed = 0;
     printf("Initializing Buffer...\n");
-
     for(int i=0; i<ARRAY_SIZE; i++){
         s->array[i] = (char *)malloc(MAX_NAME_LENGTH * sizeof(char));
     }
-
-   
-    //printf("Is this working?\n");
     pthread_mutex_init(&(s->mutex), 0);
     sem_init(&(s->empty), 0, ARRAY_SIZE);
     sem_init(&(s->full), 0, 0);
@@ -71,7 +67,6 @@ int array_get (stack *s, char **hostname){
         pthread_exit(0);
     }
     /*critical section */
-    printf("GETTING\n");
     if( strncpy(*hostname,s->array[s->counter-1], MAX_NAME_LENGTH) ==NULL ){
         printf("Bad hostname, could not get\n");
         fflush(stderr);
@@ -84,10 +79,10 @@ int array_get (stack *s, char **hostname){
     }
     s->operations++;
 
-    printf("\tthread  %lu consuming %s\n",pthread_self(), *hostname);
+    //printf("\tthread  %lu consuming %s\n",pthread_self(), *hostname);
     s->num_consumed++;
-    printf("\tcounter is: %d\n", s->counter);
-    printf("\tfilled: %d / %d \n\n", s->counter,ARRAY_SIZE);
+    // printf("\tcounter is: %d\n", s->counter);
+    // printf("\tfilled: %d / %d \n\n", s->counter,ARRAY_SIZE);
     /*remainder section */
     pthread_mutex_unlock(&(s->mutex));
     sem_post(&(s->empty));

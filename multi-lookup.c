@@ -14,7 +14,8 @@ void* requesters(void* args){
     Requesters *data = (Requesters *) args;
     //printf("I am a requester\n");
     /* *************Local Vars************ */
-    unsigned long tid = pthread_self();
+    // unsigned long tid = pthread_self();
+    pthread_t tid = pthread_self();
     int serviced_count = 0; //local count of the number of files serviced, independent for each requester
     int local_index = -1; //used by every thread
 
@@ -73,7 +74,8 @@ void *resolvers(void* args){
 
     /*local to the thread*/
     Resolvers *data = (Resolvers *) args;
-    unsigned long tid = pthread_self();
+    // unsigned long tid = pthread_self();
+     pthread_t tid = pthread_self();
     char * name = malloc(MAX_NAME_LENGTH);
     //syscall error check
     if(name==NULL){
@@ -100,7 +102,7 @@ void *resolvers(void* args){
         }
 
         /* POSION PILL */
-        //printf("word: %s\n", name);
+        printf("word: %s\n", name);
         if(strcmp(name, "PEACE OUT")==0){
             printf("Thread %lx resolved %d hostnames\n", tid, resolved_count);
             fflush(stderr);
@@ -114,6 +116,7 @@ void *resolvers(void* args){
             pthread_mutex_lock(&(data->results_lock)); 
             fprintf(data->results_log, "%s, %s\n", name, IP);
             fflush(stderr);
+            printf("FLUSH\n");
             pthread_mutex_unlock(&(data->results_lock));
             resolved_count++;
         }else{
@@ -242,7 +245,6 @@ int main(int argc, char* argv[]){
             printf("Failed to create resolver thread\n");
         }
     }
-
     
 
     for(int i=0; i<num_requesters; i++){

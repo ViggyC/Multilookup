@@ -38,7 +38,6 @@ int array_put(stack *s, char *hostname){
     //hostname is being produced by producer to fill buffer
     
     //printf("Counter is %d\n", s->counter);
-    //printf("size of hostname: %lu\n", sizeof(hostname));
     if(strncpy(s->array[s->counter], hostname, MAX_NAME_LENGTH) == NULL){
         printf("string not found");
         return 0;
@@ -49,17 +48,13 @@ int array_put(stack *s, char *hostname){
     }
     s->num_produced++;
     s->operations++;
-    //printf("\t thread %lu produced %s\n",pthread_self(), hostname);
-    //printf("\t counter is: %d\n", s->counter);
-    //printf("\t filled: %d / %d \n\n", s->counter,ARRAY_SIZE);
     //remainder section
 
     pthread_mutex_unlock(&(s->mutex));
     sem_post(&(s->full)); //added an element to buffer
-    //printf("slot filled\n");
     return 0;
 
-}  // place element into the array
+}
 
 //consumer threads
 int array_get (stack *s, char **hostname){
@@ -76,13 +71,12 @@ int array_get (stack *s, char **hostname){
         pthread_exit(0);
     }
     /*critical section */
+    printf("GETTING\n");
     if( strncpy(*hostname,s->array[s->counter-1], MAX_NAME_LENGTH) ==NULL ){
         printf("Bad hostname, could not get\n");
         fflush(stderr);
         return -1;
     }
-    
-    //*hostname = s->array[s->counter-1]; //char*
 
     s->counter--; 
     if(s->counter == 0){ //producers should stop and consumers 
@@ -90,20 +84,13 @@ int array_get (stack *s, char **hostname){
     }
     s->operations++;
 
-    // }
-    //printf("\tthread  %lu consuming %s\n",pthread_self(), *hostname);
+    printf("\tthread  %lu consuming %s\n",pthread_self(), *hostname);
     s->num_consumed++;
-    //printf("\tcounter is: %d\n", s->counter);
-    //printf("\tfilled: %d / %d \n\n", s->counter,ARRAY_SIZE);
-
+    printf("\tcounter is: %d\n", s->counter);
+    printf("\tfilled: %d / %d \n\n", s->counter,ARRAY_SIZE);
     /*remainder section */
-    //free(temp);
     pthread_mutex_unlock(&(s->mutex));
     sem_post(&(s->empty));
-    //free(temp);
-    //printf("empty slot ava;ilable\n");
-    //using same buffer so no need to free the space while we are producing and consuming
-
     return 0;
 }  
 

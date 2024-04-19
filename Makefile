@@ -1,7 +1,7 @@
 # Makefile v1 for CSCI3753-SP22 PA3C
 # Do not modify anything other MSRCS & MHDRS
 
-CC = clang
+CC = clang 
 CFLAGS =  -Wextra -Wall -pedantic -g -std=gnu99
 INCLUDES = 
 LFLAGS = 

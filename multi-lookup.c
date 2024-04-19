@@ -116,7 +116,6 @@ void *resolvers(void* args){
             pthread_mutex_lock(&(data->results_lock)); 
             fprintf(data->results_log, "%s, %s\n", name, IP);
             fflush(stderr);
-            printf("FLUSH\n");
             pthread_mutex_unlock(&(data->results_lock));
             resolved_count++;
         }else{
